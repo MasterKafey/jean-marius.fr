@@ -1,0 +1,7 @@
+Calendar:
+    type: object
+    config:
+        fields:
+            id: String!
+            summary: String!
+            description: String

@@ -1,0 +1,88 @@
+version: '3.7'
+
+services:
+    traefik.jean-marius:
+        container_name: traefik.jean-marius
+        image: traefik:v2.6
+        command:
+            - "--api.insecure=true"
+            - "--api.dashboard=true"
+            - "--providers.docker=true"
+            - "--providers.docker.exposedbydefault=false"
+            - "--entrypoints.web.address=:80"
+        ports:
+            - "${HTTP_EXTERNAL_PORT:-80}:80"
+            - "8080:8080"
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.traefik.rule=Host(`traefik.jean-marius.localhost`)"
+            - "traefik.http.routers.traefik.service=api@internal"
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./volumes/traefik:/etc/traefik
+        networks:
+            - traefik
+
+    database.jean-marius:
+        image: postgres:16.0
+        container_name: database.jean-marius
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_USER: ${DATABASE_USER:-user}
+            POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-password}
+            POSTGRES_DB: ${DATABASE_NAME:-jean-marius.fr}
+        volumes:
+            - "./volumes/database/data:/var/lib/postgresql"
+        networks:
+            - database
+
+    rabbitmq.jean-marius:
+        image: rabbitmq:3.10.25-management
+        container_name: rabbitmq.jean-marius
+        ports:
+            - "5672:5672"
+        volumes:
+            - ./volumes/rabbitmq:/var/lib/rabbitmq
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.rabbitmq.rule=Host(`rabbitmq.jean-marius.localhost`)"
+            - "traefik.http.routers.rabbitmq.entrypoints=web"
+            - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
+        networks:
+            - traefik
+            - rabbitmq
+
+    google-calendar:
+        image: google-calendar.jean-marius:latest
+        container_name: google-calendar.jean-marius
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.google-calendar.rule=Host(`google-calendar.jean-marius.localhost`)"
+            - "traefik.http.routers.google-calendar.entrypoints=web"
+            - "traefik.http.services.google-calendar.loadbalancer.server.port=80"
+        networks:
+            - traefik
+            
+    user:
+        image: user.jean-marius:latest
+        container_name: user.jean-marius
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.user.rule=Host(`user.jean-marius.localhost`)"
+            - "traefik.http.routers.user.entrypoints=web"
+            - "traefik.http.services.user.loadbalancer.server.port=80"
+        environment:
+            DATABASE_HOST: database.jean-marius
+            DATABASE_USER: ${DATABASE_USER:-user}
+            DATABASE_PASSWORD: ${DATABASE_PASSWORD:-password}
+            DATABASE_NAME: ${DATABASE_NAME:-jean-marius.fr}
+            MESSENGER_TRANSPORT_HOST: rabbitmq.jean-marius
+        networks:
+            - traefik
+            - database
+            - rabbitmq
+networks:
+    traefik:
+    database:
+    rabbitmq:

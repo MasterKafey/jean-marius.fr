@@ -1,0 +1,7 @@
+CalendarQuery:
+    type: object
+    config:
+        resolveField: '@=query("App\\GraphQL\\Resolver\\CalendarResolver::getCalendars")'
+        fields:
+            getCalendars:
+                type: '[Calendar]!'

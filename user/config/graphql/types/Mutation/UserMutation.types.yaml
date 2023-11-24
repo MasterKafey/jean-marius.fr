@@ -1,0 +1,27 @@
+UserMutation:
+    type: object
+    config:
+        fields:
+            createUser:
+                resolve: '@=mutation("App\\GraphQL\\Mutation\\UserMutation::createUser", args["input"])'
+                type: Boolean!
+                args:
+                    input: CreateUserInput!
+
+            updateUser:
+                resolve: '@=mutation("App\\GraphQL\\Mutation\\UserMutation::updateUser", args["input"])'
+                type: Boolean!
+                args:
+                    input: UpdateUserInput!
+
+            updatePassword:
+                resolve: '@=mutation("App\\GraphQL\\Mutation\\UserMutation::updatePassword", args["input"])'
+                type: Boolean!
+                args:
+                    input: UpdatePasswordInput!
+
+            deleteUser:
+                resolve: '@=mutation("App\\GraphQL\\Mutation\\UserMutation::deleteUser", args["id"])'
+                type: Boolean!
+                args:
+                    id: Int!

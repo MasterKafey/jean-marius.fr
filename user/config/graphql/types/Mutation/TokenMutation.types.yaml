@@ -1,0 +1,9 @@
+TokenMutation:
+    type: object
+    config:
+        fields:
+            login:
+                resolve: '@=mutation("App\\GraphQL\\Mutation\\TokenMutation::login", args["input"])'
+                args:
+                    input: LoginInput!
+                type: Token

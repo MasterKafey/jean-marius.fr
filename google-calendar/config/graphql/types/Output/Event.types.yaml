@@ -1,0 +1,8 @@
+Event:
+    type: object
+    config:
+        fields:
+            id: String!
+            startAt: DateTime!
+            endAt: DateTime!
+            title: String!

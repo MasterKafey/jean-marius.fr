@@ -1,0 +1,9 @@
+parameters:
+    amqp_dsn: 'amqp://%env(MESSENGER_TRANSPORT_USER)%:%env(MESSENGER_TRANSPORT_PASSWORD)%@%env(MESSENGER_TRANSPORT_HOST)%:%env(MESSENGER_TRANSPORT_PORT)%/%env(MESSENGER_TRANSPORT_VHOST)%'
+
+framework:
+    messenger:
+        transports:
+            messages: '%amqp_dsn%'
+        routing:
+            App\Amqp\Message\*: messages

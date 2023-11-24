@@ -1,0 +1,10 @@
+EventQuery:
+    type: object
+    config:
+        fields:
+            getEvents:
+                args:
+                    startingAt: DateTime!
+                    endingAt: DateTime!
+                resolve: '@=query("App\\GraphQL\\Resolver\\EventResolver::getEvents", args["startingAt"], args["endingAt"])'
+                type: '[Event]!'

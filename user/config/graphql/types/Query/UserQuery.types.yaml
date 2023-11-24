@@ -1,0 +1,8 @@
+UserQuery:
+    type: object
+    config:
+        fields:
+            getUser:
+                access: '@=isGranted("ROLE_USER")'
+                resolve: '@=query("App\\GraphQL\\Resolver\\UserQuery::getUser")'
+                type: User

@@ -1,0 +1,9 @@
+CalendarMutation:
+    type: object
+    config:
+        resolveField: '@=mutation("App\\GraphQL\\Mutation\\CalendarMutation::addCalendar", args["id"])'
+        fields:
+            addCalendar:
+                type: Calendar!
+                args:
+                    id: String!
